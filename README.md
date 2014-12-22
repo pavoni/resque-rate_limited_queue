@@ -39,18 +39,19 @@ Note that Redis Mutex uses the `redis-classy` gem internally.
 
 #### Un Pause
 Queues can be unpaused in two ways. 
-The most elegant is using (https://github.com/resque/resque-scheduler, "resque-scheduler"), this work well as long as you aren't running on a platform like heroku which requires a dedicated worker to run the scheduler.
 
-To tell the gem to use resque-scheduler you need to include resque-scheduler in your Gemfile - and also let the gem know which queue to use to schedule the unpause job (make sure this isn't a queue you've paused). Put this in an initializer.
+The most elegant is using [resque-scheduler](https://github.com/resque/resque-scheduler), this works well as long as you aren't running on a platform like heroku which requires a dedicated worker to run the resque-scheduler.
+
+To tell the gem to use resque-scheduler you need to include resque-scheduler in your Gemfile - and also let the gem know which queue to use to schedule the unpause job (make sure this isn't a queue that could get paused). Put this in an initializer.
 
 ```ruby
 Resque::Plugins::RateLimitedQueue::UnPause.queue = :my_queue
 ```
 
-Please see the section below on how to unpause on heroku
+Please see the section below on how to unpause on heroku as an alternative. If you don't install resque-scheduler AND configure the queue, then the gem will not schedule unpause jobs this way.
 
 #### Workers
-Queues are paused by renaming them so a resque called 'twitter\_api' will be renamed 'twitter\_api\_paused' when it hits a rate limit. Of course this will only work if your resque workers are not also taking jobe from the 'twitter\_api\_paused' queue. So your worker commands need to look like
+Queues are paused by renaming them, so a resque queue called 'twitter\_api' will be renamed 'twitter\_api\_paused' when it hits a rate limit. Of course this will only work if your resque workers are not also taking jobs from the 'twitter\_api\_paused' queue. So your worker commands need to look like:
 
 Either
 ```ruby
@@ -65,23 +66,83 @@ NOT
 ```ruby
 bin/resque work --queues=*
 ```
-and NOT
+or NOT
 ```ruby
 env QUEUES=* bundle exec rake jobs:work
 ```
 
 #### Unpausing on heroku
-The built in schededler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't pause this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well.
+The built in schedler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't paused this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well.
 
 ```ruby
 Resque::Plugins::RateLimitedQueue.un_pause('twitter_api')
 Resque::Plugins::RateLimitedQueue.un_pause('angellist_api')
 Resque::Plugins::RateLimitedQueue.un_pause('evernote_api')
 ```
+### A Pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
+If you're using the [Twitter Gem[ (https://github.com/sferik/twitter)
+This is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue. Make sure your code in perform doesn't catch the rate_limit exception.
 
-TODO: Twitter example
-TODO: Add new example using Pause Queue directly
-TODO: Add new example creating new queue
+The TwitterQueue will catch the exception and pause the queue (and schedule an un pause if you are using resque-scheduler). Any jobs you add while the queue is paused will be added to the paused queue
+
+```ruby
+class TwitterJob
+  class << self
+    def refresh(handle)
+      Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue(TwitterJob, handle)
+    end
+    
+    def perform(handle)
+      do_something_with_the_twitter_gem(handle)
+    end
+  end
+end
+```
+
+### A single class of pausable job using another api
+If you only have one class of job you want to queue to the api, then you can use the PauseQueue module directly
+
+```ruby
+class MyApiJob
+  extend Resque::Plugins::RateLimitedQueue
+  @queue = :my_api
+  WAIT_TIME = 60*60
+
+  def self.perform(*params)
+    do_api_stuff
+  rescue MyApiRateLimit
+    pause_for(Time.now + WAIT_TIME, name)
+    rate_limited_requeue(self, *params)
+  end
+
+  def self.enqueue(*params)
+    rate_limited_enqueue(self, *params)
+  end
+end
+````
+
+### A multiple classes of pausable job using another api
+If you have more than one class of job you want to queue to the api, then you can need to add another Queue class. This isn't hard
+
+```ruby
+class MyApiQueue
+  extend Resque::Plugins::RateLimitedQueue
+  @queue = :my_api
+  WAIT_TIME = 60*60
+
+  def self.perform(klass, *params)
+    Resque::Plugins::RateLimitedQueue.class_from_string(klass).perform(*params)
+  rescue MyApiRateLimit
+    pause_for(Time.now + WAIT_TIME, name)
+    rate_limited_requeue(self, klass, *params)
+  end
+
+  def self.enqueue(klass, *params)
+    rate_limited_enqueue(self, klass, *params)
+  end
+end
+````
+
 
 ## Contributing
 
@@ -91,4 +152,7 @@ TODO: Add new example creating new queue
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-TODO Thanks to Dominic for the idea and the redis re-name code
+## Final thoughts
+Thanks to [Dominic](https://github.com/dominicsayers) for idea of renaming the redis key - and the samole  code that does this.
+
+This is my first gem - so please forgive any errors - and feedback very welcome
