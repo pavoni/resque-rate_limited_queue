@@ -1,6 +1,6 @@
-# ResqueRateLimitedQueue
+# Resque Rate Limited Queue
 
-A Resque plugin which makes handling rate limited apis easier
+A Resque plugin which makes handling jobs that use rate limited apis easier
 
 If you have a series of jobs in a queue, this gem will pause the queue when one of the jobs hits a rate limit, and re-start the queue when the rate limit has expired.
 
@@ -15,7 +15,7 @@ If you are using another API, then you need to write a little code that catches 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'resque_rate_limited_queue'
+gem 'resque-rate-limited-queue'
 ```
 
 And then execute:
@@ -24,13 +24,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install resque_rate_limited_queue
+    $ gem install resque-rate-limited-queue
 
 ## Usage
 
 ### Configuration
 #### Redis
-The gem uses (https://github.com/kenn/redis-mutex "redis-mutex") which requires you to register the Redis server: (e.g. in `config/initializers/redis_mutex.rb` for Rails)
+The gem uses [redis-mutex](https://github.com/kenn/redis-mutex ) which requires you to register the Redis server: (e.g. in `config/initializers/redis_mutex.rb` for Rails)
 
 ```ruby
 RedisClassy.redis = Redis.new
