@@ -31,8 +31,8 @@ and evernote; these allow you to support rate limited apis with minimal changes.
   spec.add_development_dependency("rspec", "~> 2.6")
   spec.add_development_dependency("simplecov", '~> 0.9.1')
 
-  spec.add_development_dependency("angellist_api", '~> 1.0.7')
-  spec.add_development_dependency("evernote-thrift", '~> 1.25.1')
-  spec.add_development_dependency("twitter", '~> 5.11.0')
+  spec.add_development_dependency("angellist_api", '~> 1.0', '>= 1.0.7')
+  spec.add_development_dependency("evernote-thrift", '~> 1.25', '>= 1.25.1')
+  spec.add_development_dependency("twitter", '~> 5.11', '>= 5.11.0')
 
 end
