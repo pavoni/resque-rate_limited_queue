@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque_rate_limited_queue/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "resque_rate_limited_queue"
+  spec.name          = "resque-rate-limited-queue"
   spec.version       = ResqueRateLimitedQueue::VERSION
   spec.authors       = ["pavoni"]
   spec.email         = ["greg@xenapto.com"]
