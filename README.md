@@ -47,9 +47,12 @@ To tell the gem to use resque-scheduler you need to include resque-scheduler in 
 Resque::Plugins::RateLimitedQueue::UnPause.queue = :my_queue
 ```
 
+Please see the section below on how to unpause on heroku
+
 #### Workers
 Queues are paused by renaming them so a resque called 'twitter\_api' will be renamed 'twitter\_api\_paused' when it hits a rate limit. Of course this will only work if your resque workers are not also taking jobe from the 'twitter\_api\_paused' queue. So your worker commands need to look like
 
+Either
 ```ruby
 bin/resque work --queues=high,low,twitter_api
 ```
@@ -59,21 +62,26 @@ env QUEUES=high,low,twitter_api bundle exec rake jobs:work
 ```
 
 NOT
-
 ```ruby
-~~bin/resque work --queues=*~~
+bin/resque work --queues=*
 ```
-or
-~~```ruby
+and NOT
+```ruby
 env QUEUES=* bundle exec rake jobs:work
-```~~
-
-```ruby
-Resque::Plugins::RateLimitedQueue::UnPause.queue = :my_queue
 ```
 
+#### Unpausing on heroku
+The built in schededler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't pause this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well.
 
-TODO: Write usage instructions here
+```ruby
+Resque::Plugins::RateLimitedQueue.un_pause('twitter_api')
+Resque::Plugins::RateLimitedQueue.un_pause('angellist_api')
+Resque::Plugins::RateLimitedQueue.un_pause('evernote_api')
+```
+
+TODO: Twitter example
+TODO: Add new example using Pause Queue directly
+TODO: Add new example creating new queue
 
 ## Contributing
 
@@ -82,3 +90,5 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+TODO Thanks to Dominic for the idea and the redis re-name code
