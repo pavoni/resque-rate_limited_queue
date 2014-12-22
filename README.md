@@ -60,9 +60,9 @@ env QUEUES=high,low,twitter_api bundle exec rake jobs:work
 
 NOT
 
-~~```ruby
-bin/resque work --queues=*
-```~~
+```ruby
+~~bin/resque work --queues=*~~
+```
 or
 ~~```ruby
 env QUEUES=* bundle exec rake jobs:work
