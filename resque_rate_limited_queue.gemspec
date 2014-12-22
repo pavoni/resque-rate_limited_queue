@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque_rate_limited_queue/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "resque-rate-limited-queue"
+  spec.name          = "resque_rate_limited_queue"
   spec.version       = ResqueRateLimitedQueue::VERSION
   spec.authors       = ["pavoni"]
   spec.email         = ["greg@xenapto.com"]
@@ -29,7 +29,6 @@ and evernote; these allow you to support rate limited apis with minimal changes.
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 2.6"
-  spec.add_development_dependency "byebug"
   spec.add_development_dependency "simplecov"
 
   spec.add_development_dependency "angellist_api"
