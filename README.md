@@ -72,7 +72,7 @@ env QUEUES=* bundle exec rake jobs:work
 ```
 
 #### Unpausing on heroku
-The built in schedler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't paused this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well.
+The built in schedler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't paused this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well. The rake task would need to call:
 
 ```ruby
 Resque::Plugins::RateLimitedQueue.un_pause('twitter_api')
@@ -80,10 +80,11 @@ Resque::Plugins::RateLimitedQueue.un_pause('angellist_api')
 Resque::Plugins::RateLimitedQueue.un_pause('evernote_api')
 ```
 ### A Pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
-If you're using the [Twitter Gem[ (https://github.com/sferik/twitter)
-This is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue. Make sure your code in perform doesn't catch the rate_limit exception.
+If you're using the [Twitter Gem[ (https://github.com/sferik/twitter), this is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue. 
 
-The TwitterQueue will catch the exception and pause the queue (and schedule an un pause if you are using resque-scheduler). Any jobs you add while the queue is paused will be added to the paused queue
+Make sure your code in perform doesn't catch the rate_limit exception.
+
+The TwitterQueue will catch the exception and pause the queue (as well as re-scheduling the jobs and scheduling an un pause (if you are using resque-scheduler)). Any jobs you add while the queue is paused will be added to the paused queue
 
 ```ruby
 class TwitterJob
@@ -99,8 +100,8 @@ class TwitterJob
 end
 ```
 
-### A single class of pausable job using another api
-If you only have one class of job you want to queue to the api, then you can use the PauseQueue module directly
+### A single class of pausable job using a new api
+If you only have one class of job you want to queue using the api, then you can use the PauseQueue module directly
 
 ```ruby
 class MyApiJob
@@ -121,7 +122,7 @@ class MyApiJob
 end
 ````
 
-### A multiple classes of pausable job using another api
+### Multiple classes of pausable job using a new api
 If you have more than one class of job you want to queue to the api, then you can need to add another Queue class. This isn't hard
 
 ```ruby
@@ -142,7 +143,7 @@ class MyApiQueue
   end
 end
 ````
-
+If you do this - please contribute - and I'll add to the gem.
 
 ## Contributing
 
@@ -153,6 +154,6 @@ end
 5. Create a new Pull Request
 
 ## Final thoughts
-Thanks to [Dominic](https://github.com/dominicsayers) for idea of renaming the redis key - and the samole  code that does this.
+Thanks to [Dominic](https://github.com/dominicsayers) for idea of renaming the redis key - and the sample  code that does this.
 
 This is my first gem - so please forgive any errors - and feedback very welcome
