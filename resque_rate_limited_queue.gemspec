@@ -23,16 +23,16 @@ and evernote; these allow you to support rate limited apis with minimal changes.
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency('resque', '>= 1.9.10')
-  spec.add_dependency('redis-mutex', '> 3.0.0')
+  spec.add_dependency('resque', '~> 1.9', '>= 1.9.10')
+  spec.add_dependency('redis-mutex','~> 3.0', '> 3.0.0')
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 2.6"
-  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "simplecov", '->0.9.1')
 
-  spec.add_development_dependency "angellist_api"
-  spec.add_development_dependency "evernote-thrift"
-  spec.add_development_dependency "twitter"
+  spec.add_development_dependency "angellist_api", '-> 1.0.7'
+  spec.add_development_dependency "evernote-thrift", '-> 1.25.1'
+  spec.add_development_dependency "twitter", '-> 5.11.0'
 
 end
