@@ -5,7 +5,6 @@ require 'rspec'
 require 'redis-classy'
 require 'redis-mutex'
 
-require 'byebug'
 require 'simplecov'
 
 RSpec.configure do |config|
