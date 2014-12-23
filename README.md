@@ -40,7 +40,7 @@ RedisClassy.redis = Redis.new
 Note that Redis Mutex uses the `redis-classy` gem internally.
 
 #### Un Pause
-Queues can be unpaused in two ways. 
+Queues can be unpaused in two ways.
 
 The most elegant is using [resque-scheduler](https://github.com/resque/resque-scheduler), this works well as long as you aren't running on a platform like heroku which requires a dedicated worker to run the resque-scheduler.
 
@@ -82,7 +82,7 @@ Resque::Plugins::RateLimitedQueue.un_pause('angellist_api')
 Resque::Plugins::RateLimitedQueue.un_pause('evernote_api')
 ```
 ### A Pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
-If you're using the [twitter gem[ (https://github.com/sferik/twitter), this is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue. 
+If you're using the [twitter gem[ (https://github.com/sferik/twitter), this is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue.
 
 Make sure your code in perform doesn't catch the rate_limit exception.
 
@@ -94,7 +94,7 @@ class TwitterJob
     def refresh(handle)
       Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue(TwitterJob, handle)
     end
-    
+
     def perform(handle)
       do_something_with_the_twitter_gem(handle)
     end
@@ -128,20 +128,15 @@ end
 If you have more than one class of job you want to queue to the api, then you can need to add another Queue class. This isn't hard
 
 ```ruby
-class MyApiQueue
-  extend Resque::Plugins::RateLimitedQueue
+class MyApiQueue < Resque::Plugins::RateLimitedQueue::BaseApiQueue
   @queue = :my_api
   WAIT_TIME = 60*60
 
   def self.perform(klass, *params)
-    Resque::Plugins::RateLimitedQueue.class_from_string(klass).perform(*params)
+    super
   rescue MyApiRateLimit
     pause_for(Time.now + WAIT_TIME, name)
     rate_limited_requeue(self, klass, *params)
-  end
-
-  def self.enqueue(klass, *params)
-    rate_limited_enqueue(self, klass, *params)
   end
 end
 ````
