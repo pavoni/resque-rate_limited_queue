@@ -19,7 +19,7 @@ describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
       Resque.should_receive(:enqueue_to).with(
         :evernote_api,
         Resque::Plugins::RateLimitedQueue::EvernoteQueue,
-        RateLimitedTestQueueEn,
+        RateLimitedTestQueueEn.to_s,
         true)
       Resque::Plugins::RateLimitedQueue::EvernoteQueue
         .enqueue(RateLimitedTestQueueEn, true)
@@ -43,9 +43,7 @@ describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
         Resque::Plugins::RateLimitedQueue::EvernoteQueue.stub(:rate_limited_requeue)
       end
       it 'pauses queue when request fails' do
-        Resque::Plugins::RateLimitedQueue::EvernoteQueue.should_receive(:pause_for).with(
-          anything,
-          Resque::Plugins::RateLimitedQueue::EvernoteQueue.to_s)
+        Resque::Plugins::RateLimitedQueue::EvernoteQueue.should_receive(:pause_for)
         Resque::Plugins::RateLimitedQueue::EvernoteQueue
           .enqueue(RateLimitedTestQueueEn, false)
       end

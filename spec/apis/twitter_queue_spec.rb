@@ -14,7 +14,7 @@ describe Resque::Plugins::RateLimitedQueue::TwitterQueue do
       Resque.should_receive(:enqueue_to).with(
         :twitter_api,
         Resque::Plugins::RateLimitedQueue::TwitterQueue,
-        RateLimitedTestQueueTw,
+        RateLimitedTestQueueTw.to_s,
         true)
       Resque::Plugins::RateLimitedQueue::TwitterQueue
         .enqueue(RateLimitedTestQueueTw, true)
@@ -38,9 +38,7 @@ describe Resque::Plugins::RateLimitedQueue::TwitterQueue do
         Resque::Plugins::RateLimitedQueue::TwitterQueue.stub(:rate_limited_requeue)
       end
       it 'pauses queue when request fails' do
-        Resque::Plugins::RateLimitedQueue::TwitterQueue.should_receive(:pause_for).with(
-          anything,
-          Resque::Plugins::RateLimitedQueue::TwitterQueue.to_s)
+        Resque::Plugins::RateLimitedQueue::TwitterQueue.should_receive(:pause_for)
         Resque::Plugins::RateLimitedQueue::TwitterQueue
           .enqueue(RateLimitedTestQueueTw, false)
       end
