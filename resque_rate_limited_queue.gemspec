@@ -1,13 +1,13 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'resque_rate_limited_queue/version'
+require 'resque/plugins/rate_limited_queue/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "resque-rate-limited-queue"
   spec.version       = ResqueRateLimitedQueue::VERSION
-  spec.authors       = ["pavoni"]
-  spec.email         = ["greg@xenapto.com"]
+  spec.authors       = ["Greg Dowling"]
+  spec.email         = ["mail@greddowling.com"]
   spec.summary     = %q{A Resque plugin to help manage jobs that use rate limited apis, pausing when you hit the limits and restarting later.}
   spec.description = %q{A Resque plugin which allows you to create dedicated queues for jobs that use rate limited apis.
 These queues will pause when one of the jobs hits a rate limit, and unpause after a suitable time period.
