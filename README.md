@@ -77,9 +77,10 @@ env QUEUES=* bundle exec rake jobs:work
 The built in schedler on heroku doesn't support dynamic scheduling from an API, so unless you want to provision an extra worker to run resque-scheduler - the best option is just to unpause all your queues on a regular basis. If they aren't paused this is a harmless no-op. If not enough time has elapsed the jobs will just hit the rate_limit and get paused again. We've found that a hourly 'rake unpause' job seems to work well. The rake task would need to call:
 
 ```ruby
-Resque::Plugins::RateLimitedQueue.un_pause('twitter_api')
-Resque::Plugins::RateLimitedQueue.un_pause('angellist_api')
-Resque::Plugins::RateLimitedQueue.un_pause('evernote_api')
+Resque::Plugins::RateLimitedQueue.TwitterQueue.un_pause
+Resque::Plugins::RateLimitedQueue.AngellistQueue.un_pause
+MyQueue.un_pause
+MyJob.un_pause
 ```
 ### A Pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
 If you're using the [twitter gem[ (https://github.com/sferik/twitter), this is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue.
