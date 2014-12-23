@@ -11,7 +11,7 @@ module Resque
         def self.perform(klass, *params)
           find_class(klass).perform(*params)
         rescue AngellistApi::Error::TooManyRequests
-          pause_for(Time.now + (60 * 60), name)
+          pause_for(Time.now + (60 * 60))
           rate_limited_requeue(self, klass, *params)
         end
 

@@ -10,7 +10,7 @@ module Resque
         def self.perform(klass, *params)
           find_class(klass).perform(*params)
         rescue Evernote::EDAM::Error::EDAMSystemException => e
-          pause_for(Time.now + 60 * e.rateLimitDuration.seconds, name)
+          pause_for(Time.now + 60 * e.rateLimitDuration.seconds)
           rate_limited_requeue(self, klass, *params)
         end
 
