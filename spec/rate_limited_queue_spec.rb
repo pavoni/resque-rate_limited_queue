@@ -118,4 +118,19 @@ describe Resque::Plugins::RateLimitedQueue do
       end
     end
   end
+
+    describe 'find_class' do
+      it 'works with symbol' do
+        RateLimitedTestQueue.find_class(RateLimitedTestQueue).should eq RateLimitedTestQueue
+      end
+
+      it 'works with simple string' do
+        RateLimitedTestQueue.find_class('RateLimitedTestQueue').should eq RateLimitedTestQueue
+      end
+
+      it 'works with complex string' do
+        RateLimitedTestQueue.find_class('Resque::Plugins::RateLimitedQueue').should eq Resque::Plugins::RateLimitedQueue
+      end
+    end
+
 end

@@ -9,7 +9,7 @@ module Resque
         @queue = :angellist_api
 
         def self.perform(klass, *params)
-          class_from_string(klass).perform(*params)
+          find_class(klass).perform(*params)
         rescue AngellistApi::Error::TooManyRequests
           pause_for(Time.now + (60 * 60), name)
           rate_limited_requeue(self, klass, *params)

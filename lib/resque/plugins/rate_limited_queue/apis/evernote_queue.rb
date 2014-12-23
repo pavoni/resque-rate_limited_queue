@@ -8,7 +8,7 @@ module Resque
         @queue = :evernote_api
 
         def self.perform(klass, *params)
-          class_from_string(klass).perform(*params)
+          find_class(klass).perform(*params)
         rescue Evernote::EDAM::Error::EDAMSystemException => e
           pause_for(Time.now + 60 * e.rateLimitDuration.seconds, name)
           rate_limited_requeue(self, klass, *params)

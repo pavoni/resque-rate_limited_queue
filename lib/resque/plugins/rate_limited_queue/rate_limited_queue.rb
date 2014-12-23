@@ -4,7 +4,6 @@ module Resque
       RESQUE_PREFIX = 'queue:'
       MUTEX = 'Resque::Plugins::RateLimitedQueue'
 
-
       def around_perform_with_check_and_requeue(*params)
         paused = false
         with_lock do
@@ -69,8 +68,10 @@ module Resque
         end
       end
 
-      def class_from_string(str)
-        str.split('::').inject(Object) do |mod, class_name|
+      def find_class(klass)
+        return klass if klass.is_a? Class
+        return Object.const_get(klass) unless klass.include?('::')
+        klass.split('::').reduce(Object) do |mod, class_name|
           mod.const_get(class_name)
         end
       end

@@ -8,7 +8,7 @@ module Resque
         @queue = :twitter_api
 
         def self.perform(klass, *params)
-          class_from_string(klass).perform(*params)
+          find_class(klass).perform(*params)
         rescue Twitter::Error::TooManyRequests,
                Twitter::Error::EnhanceYourCalm => e
           pause_for(Time.now + e.rate_limit.reset_in, name)
