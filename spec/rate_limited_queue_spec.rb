@@ -119,18 +119,59 @@ describe Resque::Plugins::RateLimitedQueue do
     end
   end
 
-    describe 'find_class' do
-      it 'works with symbol' do
-        RateLimitedTestQueue.find_class(RateLimitedTestQueue).should eq RateLimitedTestQueue
-      end
-
-      it 'works with simple string' do
-        RateLimitedTestQueue.find_class('RateLimitedTestQueue').should eq RateLimitedTestQueue
-      end
-
-      it 'works with complex string' do
-        RateLimitedTestQueue.find_class('Resque::Plugins::RateLimitedQueue').should eq Resque::Plugins::RateLimitedQueue
-      end
+  describe 'find_class' do
+    it 'works with symbol' do
+      RateLimitedTestQueue.find_class(RateLimitedTestQueue).should eq RateLimitedTestQueue
     end
 
+    it 'works with simple string' do
+      RateLimitedTestQueue.find_class('RateLimitedTestQueue').should eq RateLimitedTestQueue
+    end
+
+    it 'works with complex string' do
+      RateLimitedTestQueue.find_class('Resque::Plugins::RateLimitedQueue').should eq Resque::Plugins::RateLimitedQueue
+    end
+  end
+
+  context 'with redis errors' do
+    before do
+      RateLimitedTestQueue.stub(:paused?).and_return(true)
+    end
+    context 'with not found error' do
+      before do
+        Resque.redis.stub(:renamenx).and_raise(Redis::CommandError.new('ERR no such key'))
+      end
+
+      describe 'pause' do
+        it 'should not throw exception' do
+          expect { RateLimitedTestQueue.pause }.to_not raise_error
+        end
+      end
+
+      describe 'un_pause' do
+        it 'should not throw exception' do
+          expect { RateLimitedTestQueue.un_pause }.to_not raise_error
+        end
+      end
+
+    end
+
+    context 'with other errror' do
+      before do
+        Resque.redis.stub(:renamenx).and_raise(Redis::CommandError.new('ERR something else'))
+      end
+
+      describe 'pause' do
+        it 'should throw exception' do
+          expect { RateLimitedTestQueue.pause }.to raise_error(Redis::CommandError)
+        end
+      end
+
+      describe 'un_pause' do
+        it 'should throw exception' do
+          expect { RateLimitedTestQueue.un_pause }.to raise_error(Redis::CommandError)
+        end
+      end
+    end
+  end
 end
