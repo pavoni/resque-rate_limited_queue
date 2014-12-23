@@ -16,7 +16,7 @@ module Resque
         end
 
         def self.enqueue(klass, *params)
-          rate_limited_enqueue(self, klass, *params)
+          rate_limited_enqueue(self, klass.to_s, *params)
         end
       end
     end
