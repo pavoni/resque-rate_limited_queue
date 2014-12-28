@@ -34,15 +34,11 @@ module Resque
       end
 
       def un_pause
-        with_lock do
-          if paused?
-            begin
-              Resque.redis.renamenx(RESQUE_PREFIX + paused_queue_name, RESQUE_PREFIX + @queue.to_s)
-            rescue Redis::CommandError => e
-              raise unless e.message == 'ERR no such key'
-            end
-          end
-        end
+        Resque.redis.renamenx(RESQUE_PREFIX + paused_queue_name, RESQUE_PREFIX + @queue.to_s)
+        true
+      rescue Redis::CommandError => e
+        raise unless e.message == 'ERR no such key'
+        false
       end
 
       def pause
