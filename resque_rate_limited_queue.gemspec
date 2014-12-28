@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'resque/plugins/rate_limited_queue/version'
+require 'resque_rate_limited_queue/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "resque-rate-limited-queue"
