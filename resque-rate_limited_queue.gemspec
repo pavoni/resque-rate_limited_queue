@@ -15,7 +15,7 @@ The rate_limited_queue can be used directly, and just requires catching the rate
 queue. There are also additional queues provided that already include the pause/rety logic for twitter, angelist
 and evernote; these allow you to support rate limited apis with minimal changes.}
 
-  spec.homepage      = ""
+  spec.homepage      = "http://github.com/pavoni/resque-rate-limited-queue"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
