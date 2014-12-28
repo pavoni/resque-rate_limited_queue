@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'resque_rate_limited_queue'
+require 'resque/rate_limited_queue'
 
 class RateLimitDuration
   def self.seconds
@@ -14,6 +14,9 @@ class RateLimitedTestQueueEn
 end
 
 describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
+  before do
+    Resque::Plugins::RateLimitedQueue::EvernoteQueue.stub(:paused?).and_return(false)
+  end
   describe 'enqueue' do
     it 'enqueues to the correct queue with the correct parameters' do
       Resque.should_receive(:enqueue_to).with(

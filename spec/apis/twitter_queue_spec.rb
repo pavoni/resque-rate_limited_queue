@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'resque_rate_limited_queue'
+require 'resque/rate_limited_queue'
 
 class RateLimitedTestQueueTw
   def self.perform(succeed)
@@ -9,6 +9,10 @@ class RateLimitedTestQueueTw
 end
 
 describe Resque::Plugins::RateLimitedQueue::TwitterQueue do
+  before do
+    Resque::Plugins::RateLimitedQueue::TwitterQueue.stub(:paused?).and_return(false)
+  end
+
   describe 'enqueue' do
     it 'enqueues to the correct queue with the correct parameters' do
       Resque.should_receive(:enqueue_to).with(

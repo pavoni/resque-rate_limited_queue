@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'resque_rate_limited_queue'
+require 'resque/rate_limited_queue'
 
 class RateLimitedTestQueue
 end
