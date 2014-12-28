@@ -30,8 +30,7 @@ module Resque
       end
 
       def pause_for(timestamp)
-        pause
-        UnPause.enqueue(timestamp, name)
+        UnPause.enqueue(timestamp, name) if pause
       end
 
       def un_pause
@@ -48,8 +47,10 @@ module Resque
 
       def pause
         Resque.redis.renamenx(RESQUE_PREFIX + @queue.to_s, RESQUE_PREFIX + paused_queue_name)
+        true
       rescue Redis::CommandError => e
         raise unless e.message == 'ERR no such key'
+        false
       end
 
       def paused?
