@@ -41,7 +41,7 @@ describe Resque::Plugins::RateLimitedQueue::AngellistQueue do
         Resque::Plugins::RateLimitedQueue::AngellistQueue.stub(:rate_limited_requeue)
       end
       it 'pauses queue when request fails' do
-        Resque::Plugins::RateLimitedQueue::AngellistQueue.should_receive(:pause_for)
+        Resque::Plugins::RateLimitedQueue::AngellistQueue.should_receive(:pause_until)
         Resque::Plugins::RateLimitedQueue::AngellistQueue
           .enqueue(RateLimitedTestQueueAL, false)
       end

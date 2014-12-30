@@ -46,7 +46,7 @@ describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
         Resque::Plugins::RateLimitedQueue::EvernoteQueue.stub(:rate_limited_requeue)
       end
       it 'pauses queue when request fails' do
-        Resque::Plugins::RateLimitedQueue::EvernoteQueue.should_receive(:pause_for)
+        Resque::Plugins::RateLimitedQueue::EvernoteQueue.should_receive(:pause_until)
         Resque::Plugins::RateLimitedQueue::EvernoteQueue
           .enqueue(RateLimitedTestQueueEn, false)
       end

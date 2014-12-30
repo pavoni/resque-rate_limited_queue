@@ -10,7 +10,7 @@ module Resque
           super
         rescue Twitter::Error::TooManyRequests,
                Twitter::Error::EnhanceYourCalm => e
-          pause_for(Time.now + e.rate_limit.reset_in)
+          pause_until(Time.now + e.rate_limit.reset_in)
           rate_limited_requeue(self, klass, *params)
         end
       end

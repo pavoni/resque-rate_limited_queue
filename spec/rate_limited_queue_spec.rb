@@ -72,20 +72,20 @@ describe Resque::Plugins::RateLimitedQueue do
       end
     end
 
-    describe 'pause_for' do
+    describe 'pause_until' do
       before do
         Resque.redis.stub(:renamenx).and_return(true)
       end
 
       it 'should pause the queue' do
         RateLimitedTestQueue.should_receive(:pause)
-        RateLimitedTestQueue.pause_for(Time.now + (5 * 60 * 60))
+        RateLimitedTestQueue.pause_until(Time.now + (5 * 60 * 60))
       end
 
       it 'should schedule an unpause job' do
         Resque::Plugins::RateLimitedQueue::UnPause.should_receive(:enqueue)
           .with(nil, 'RateLimitedTestQueue')
-        RateLimitedTestQueue.pause_for(nil)
+        RateLimitedTestQueue.pause_until(nil)
       end
     end
   end

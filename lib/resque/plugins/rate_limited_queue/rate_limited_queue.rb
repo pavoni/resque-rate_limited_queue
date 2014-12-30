@@ -29,7 +29,7 @@ module Resque
         rate_limited_enqueue(klass, *params)
       end
 
-      def pause_for(timestamp)
+      def pause_until(timestamp)
         UnPause.enqueue(timestamp, name) if pause
       end
 

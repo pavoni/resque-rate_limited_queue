@@ -26,6 +26,7 @@ module Resque
           end
 
           def class_from_string(str)
+            return Object.const_get(klass) unless klass.include?('::')
             str.split('::').reduce(Object) do |mod, class_name|
               mod.const_get(class_name)
             end
