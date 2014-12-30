@@ -115,7 +115,7 @@ class MyApiJob
   def self.perform(*params)
     do_api_stuff
   rescue MyApiRateLimit
-    pause_for(Time.now + WAIT_TIME, name)
+    pause_until(Time.now + WAIT_TIME, name)
     rate_limited_requeue(self, *params)
   end
 
@@ -136,12 +136,45 @@ class MyApiQueue < Resque::Plugins::RateLimitedQueue::BaseApiQueue
   def self.perform(klass, *params)
     super
   rescue MyApiRateLimit
-    pause_for(Time.now + WAIT_TIME, name)
+    pause_until(Time.now + WAIT_TIME, name)
     rate_limited_requeue(self, klass, *params)
   end
 end
 ````
 If you do this - please contribute - and I'll add to the gem.
+
+## Development Documentation
+All the functions are class methods
+
+# rate_limited_enqueue(klass, *params)
+# rate_limited_requeue(klass, *params)
+Queue the job specified to the resque queue specified by @queue. The requeue function is intended for use when you need the job to be pushed back to the queue; it just calls enqueue, but they are split to make testing with stubs easier.
+
+# pause
+Pauses the queue specified by @queue, if it is not already paused.
+In most cases you should call pause_until to pause a queue when yoiu hit a rate limit.
+
+# un_pause
+Un-pauses teh queue specified by @queue, if it is paused.
+
+# pause_until(timestamp)
+Pauses the queue (specified by @queue) and then queues a job to unpause the queue specified by @queue, using resque-scheduler to the queue specified by Resque::Plugins::RateLimitedQueue::UnPause.queue at the timestamp specified.
+If resque schedule is not included, or UnPause.queue isn't specified this will just pause the queue.
+
+This is the prefered function to call when you hit a rate limit, since it with work regardless of the unpause method used by the aplication.
+
+# paused?
+This returns true or false to indicate wheher the queue is pauses. Be aware that the queue state could change get after the call returns, but before your code executes. Use with_lock if you need to avoid this.
+
+# paused_queue_name
+Returns the name of the queue when it is paused.
+
+# with_lock(&block)
+Takes ownership of the PauseQueue semaphor before executing the block passed. Useful if you need to test the state of the queue and take some action without the state changing.
+
+# find_class(klass)
+Takes the parameter passes, and if it's a string class name, tries to turn it into a class.
+
 
 ## Contributing
 
@@ -151,7 +184,15 @@ If you do this - please contribute - and I'll add to the gem.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+
+## Version history
+
+0.0.x Mostly pre-release version
+1.0.0 Change pause_for to be pause_until to better reflect function
+
+
+
 ## Final thoughts
-Thanks to [Dominic](https://github.com/dominicsayers) for idea of renaming the redis key - and the sample  code that does this.
+Thanks to [Dominic](https://github.com/dominicsayers) for idea of renaming the redis key - and the sample code that does this.
 
 This is my first gem - so please forgive any errors - and feedback very welcome
