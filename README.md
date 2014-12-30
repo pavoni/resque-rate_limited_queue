@@ -1,7 +1,5 @@
 # Resque Rate Limited Queue
 
-PLEASE NOTE THIS IS NOW SUITABLE FOR TRIAL USE - I EXPECT TO RELEASE A STABLE VERSION IN EARLY JAN 2015
-
 A Resque plugin which makes handling jobs that use rate limited apis easier
 
 If you have a series of jobs in a queue, this gem will pause the queue when one of the jobs hits a rate limit, and re-start the queue when the rate limit has expired.
