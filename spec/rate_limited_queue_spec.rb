@@ -174,4 +174,26 @@ describe Resque::Plugins::RateLimitedQueue do
       end
     end
   end
+
+  describe 'paused?' do
+    context 'with paused queue' do
+      before do
+        Resque.redis.stub(:exists).and_return(true)
+      end
+
+      it 'should return the true if the paused queue exists' do
+        expect(RateLimitedTestQueue.paused?).to eq(true)
+      end
+    end
+
+    context 'with un paused queue' do
+      before do
+        Resque.redis.stub(:exists).and_return(false)
+      end
+
+      it 'should return the false if the paused queue does not exist' do
+        expect(RateLimitedTestQueue.paused?).to eq(false)
+      end
+    end
+  end
 end

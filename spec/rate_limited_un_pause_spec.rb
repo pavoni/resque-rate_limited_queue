@@ -35,4 +35,15 @@ describe Resque::Plugins::RateLimitedQueue::UnPause do
     end
   end
 
+  describe 'class_from_string' do
+    it 'converts unqualified classes' do
+      expect(Resque::Plugins::RateLimitedQueue::UnPause.class_from_string(RateLimitedTestQueue.to_s))
+        .to eq(RateLimitedTestQueue)
+    end
+    it 'converts qualified classes' do
+      expect(Resque::Plugins::RateLimitedQueue::UnPause.class_from_string(Resque::Plugins::RateLimitedQueue::UnPause.to_s))
+        .to eq(Resque::Plugins::RateLimitedQueue::UnPause)
+    end
+  end
+
 end
