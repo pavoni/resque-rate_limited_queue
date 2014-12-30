@@ -203,9 +203,9 @@ Takes the parameter passed, and if it's a string class name, tries to turn it in
 
 ## Version history
 
-0.0.x Mostly pre-release version
+0.0.x Mostly pre-release versions
 
-1.0.0 Change `pause_for` to be `pause_until` to better reflect function
+1.0.0 First release version. Breaking change - renamed  `pause_for` to be `pause_until` to better reflect function
 
 
 
