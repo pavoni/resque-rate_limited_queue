@@ -161,20 +161,20 @@ In most cases you should call pause_until to pause a queue when yoiu hit a rate 
 ```ruby
 un_pause
 ````
-Un-pauses teh queue specified by @queue, if it is paused.
+Un-pauses the queue specified by @queue, if it is paused.
 
 ```ruby
 pause_until(timestamp)
 ````
-Pauses the queue (specified by @queue) and then queues a job to unpause the queue specified by @queue, using resque-scheduler to the queue specified by Resque::Plugins::RateLimitedQueue::UnPause.queue at the timestamp specified.
-If resque schedule is not included, or UnPause.queue isn't specified this will just pause the queue.
+Pauses the queue (specified by @queue) and then queues a job to unpause the queue specified by @queue, using resque-scheduler to the queue specified by `Resque::Plugins::RateLimitedQueue::UnPause.queue` at the timestamp specified.
+If `resque-schedule` is not included, or `UnPause.queue` isn't specified this will just pause the queue.
 
-This is the prefered function to call when you hit a rate limit, since it with work regardless of the unpause method used by the aplication.
+This is the prefered function to call when you hit a rate limit, since it with work regardless of the unpause method used by the application.
 
 ```ruby
 paused?
 ````
-This returns true or false to indicate wheher the queue is pauses. Be aware that the queue state could change get after the call returns, but before your code executes. Use with_lock if you need to avoid this.
+This returns true or false to indicate wheher the queue is paused. Be aware that the queue state could change get after the call returns, but before your code executes. Use with_lock if you need to avoid this.
 
 ```ruby
 paused_queue_name
@@ -189,7 +189,7 @@ Takes ownership of the PauseQueue semaphor before executing the block passed. Us
 ```ruby
 find_class(klass)
 ````
-Takes the parameter passes, and if it's a string class name, tries to turn it into a class.
+Takes the parameter passed, and if it's a string class name, tries to turn it into a class.
 
 
 ## Contributing
