@@ -44,13 +44,13 @@ Queues can be unpaused in two ways.
 
 The most elegant is using [resque-scheduler](https://github.com/resque/resque-scheduler), this works well as long as you aren't running on a platform like heroku which requires a dedicated worker to run the resque-scheduler.
 
-To tell the gem to use resque-scheduler you need to include resque-scheduler in your Gemfile - and also let the gem know which queue to use to schedule the unpause job (make sure this isn't a queue that could get paused). Put this in an initializer.
+To tell the gem to use `resque-scheduler` you need to include it in your Gemfile - and also let the gem know which queue to use to schedule the unpause job (make sure this isn't a queue that could get paused). Put this in an initializer.
 
 ```ruby
 Resque::Plugins::RateLimitedQueue::UnPause.queue = :my_queue
 ```
 
-Please see the section below on how to unpause on heroku as an alternative. If you don't install resque-scheduler AND configure the queue, then the gem will not schedule unpause jobs this way.
+Please see the section below on how to unpause on heroku as an alternative. If you don't install `resque-scheduler` AND configure the queue, then the gem will not schedule unpause jobs this way.
 
 #### Workers
 Queues are paused by renaming them, so a resque queue called 'twitter\_api' will be renamed 'twitter\_api\_paused' when it hits a rate limit. Of course this will only work if your resque workers are not also taking jobs from the 'twitter\_api\_paused' queue. So your worker commands need to look like:
@@ -150,13 +150,13 @@ All the functions are class methods
 rate_limited_enqueue(klass, *params)
 rate_limited_requeue(klass, *params)
 ````
-Queue the job specified to the resque queue specified by `@queue`. The requeue function is intended for use when you need the job to be pushed back to the queue; it just calls enqueue, but they are split to make testing with stubs easier.
+Queue the job specified to the resque queue specified by `@queue`. `rate_limited_requeue` is intended for use when you need the job to be pushed back to the queue; it just calls `rate_limited_queue`, but they are split to make testing with stubs easier.
 
 ```ruby
 pause
 ````
 Pauses the queue specified by `@queue`, if it is not already paused.
-In most cases you should call pause_until to pause a queue when yoiu hit a rate limit.
+In most cases you should call `pause_until` to pause a queue when you hit a rate limit.
 
 ```ruby
 un_pause
@@ -174,7 +174,7 @@ This is the prefered function to call when you hit a rate limit, since it with w
 ```ruby
 paused?
 ````
-This returns true or false to indicate wheher the queue is paused. Be aware that the queue state could change get after the call returns, but before your code executes. Use with_lock if you need to avoid this.
+This returns true or false to indicate wheher the queue is paused. Be aware that the queue state could change get after the call returns, but before your code executes. Use `with_lock` if you need to avoid this.
 
 ```ruby
 paused_queue_name
@@ -205,7 +205,7 @@ Takes the parameter passed, and if it's a string class name, tries to turn it in
 
 0.0.x Mostly pre-release version
 
-1.0.0 Change pause_for to be pause_until to better reflect function
+1.0.0 Change `pause_for` to be `pause_until` to better reflect function
 
 
 
