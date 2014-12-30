@@ -150,23 +150,23 @@ All the functions are class methods
 rate_limited_enqueue(klass, *params)
 rate_limited_requeue(klass, *params)
 ````
-Queue the job specified to the resque queue specified by @queue. The requeue function is intended for use when you need the job to be pushed back to the queue; it just calls enqueue, but they are split to make testing with stubs easier.
+Queue the job specified to the resque queue specified by `@queue`. The requeue function is intended for use when you need the job to be pushed back to the queue; it just calls enqueue, but they are split to make testing with stubs easier.
 
 ```ruby
 pause
 ````
-Pauses the queue specified by @queue, if it is not already paused.
+Pauses the queue specified by `@queue`, if it is not already paused.
 In most cases you should call pause_until to pause a queue when yoiu hit a rate limit.
 
 ```ruby
 un_pause
 ````
-Un-pauses the queue specified by @queue, if it is paused.
+Un-pauses the queue specified by `@queue`, if it is paused.
 
 ```ruby
 pause_until(timestamp)
 ````
-Pauses the queue (specified by @queue) and then queues a job to unpause the queue specified by @queue, using resque-scheduler to the queue specified by `Resque::Plugins::RateLimitedQueue::UnPause.queue` at the timestamp specified.
+Pauses the queue (specified by `@queue`) and then queues a job to unpause the queue specified by `@queue`, using resque-scheduler to the queue specified by `Resque::Plugins::RateLimitedQueue::UnPause.queue` at the timestamp specified.
 If `resque-schedule` is not included, or `UnPause.queue` isn't specified this will just pause the queue.
 
 This is the prefered function to call when you hit a rate limit, since it with work regardless of the unpause method used by the application.
