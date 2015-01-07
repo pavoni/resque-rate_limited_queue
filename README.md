@@ -24,7 +24,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install resque-rate-limited-queue
+    $ gem install resque-rate_limited_queue
 
 ## Usage
 
