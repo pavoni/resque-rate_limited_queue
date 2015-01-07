@@ -80,7 +80,7 @@ Resque::Plugins::RateLimitedQueue.AngellistQueue.un_pause
 MyQueue.un_pause
 MyJob.un_pause
 ```
-### A Pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
+### A pausable job using one of the build-in queues (Twitter, Angellist, Evernote)
 If you're using the [twitter gem](https://github.com/sferik/twitter), this is really simple. Instead of queuing using Resque.enqueue, you just use Resque::Plugins::RateLimitedQueue:TwitterQueue.enqueue.
 
 Make sure your code in perform doesn't catch the rate_limit exception.
