@@ -124,7 +124,7 @@ end
 ````
 
 ### Multiple classes of pausable job using a new api
-If you have more than one class of job you want to queue to the api, then you can need to add another Queue class. This isn't hard
+If you have more than one class of job you want to queue to the api, then you need to add another Queue class. This isn't hard
 
 ```ruby
 class MyApiQueue < Resque::Plugins::RateLimitedQueue::BaseApiQueue
