@@ -15,7 +15,7 @@ If you are using another API, then you need to write a little code that catches 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'resque-rate-limited-queue'
+gem 'resque-rate_limited_queue'
 ```
 
 And then execute:
