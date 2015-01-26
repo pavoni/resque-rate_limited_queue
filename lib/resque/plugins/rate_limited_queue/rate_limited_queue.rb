@@ -25,8 +25,14 @@ module Resque
       end
 
       def rate_limited_requeue(klass, *params)
-        # split from above to make it easy to stub for testing
-        rate_limited_enqueue(klass, *params)
+        # if the queue is empty, this was the last job - so queue to the paused queue
+        with_lock do
+          if paused?(true)
+            Resque.enqueue_to(paused_queue_name, klass, *params)
+          else
+            Resque.enqueue_to(@queue, klass, *params)
+          end
+        end
       end
 
       def pause_until(timestamp)
@@ -49,8 +55,15 @@ module Resque
         false
       end
 
-      def paused?
-        Resque.redis.exists(RESQUE_PREFIX + paused_queue_name)
+      def paused?(unknown = false)
+        # parameter is what to return if the queue is empty, and so the state is unknown
+        if Resque.redis.exists(RESQUE_PREFIX + queue_name)
+          false
+        elsif Resque.redis.exists(RESQUE_PREFIX + paused_queue_name)
+          true
+        else
+          unknown
+        end
       end
 
       def paused_queue_name

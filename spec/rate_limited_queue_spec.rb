@@ -55,7 +55,6 @@ describe Resque::Plugins::RateLimitedQueue do
         Resque.should_not_receive(:enqueue_to)
         RateLimitedTestQueue.perform(true)
       end
-
     end
 
     describe 'pause' do
@@ -153,7 +152,6 @@ describe Resque::Plugins::RateLimitedQueue do
           expect { RateLimitedTestQueue.un_pause }.to_not raise_error
         end
       end
-
     end
 
     context 'with other errror' do
@@ -178,7 +176,8 @@ describe Resque::Plugins::RateLimitedQueue do
   describe 'paused?' do
     context 'with paused queue' do
       before do
-        Resque.redis.stub(:exists).and_return(true)
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}_paused").and_return(true)
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}").and_return(false)
       end
 
       it 'should return the true if the paused queue exists' do
@@ -188,11 +187,24 @@ describe Resque::Plugins::RateLimitedQueue do
 
     context 'with un paused queue' do
       before do
-        Resque.redis.stub(:exists).and_return(false)
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}_paused").and_return(false)
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}").and_return(true)
       end
 
-      it 'should return the false if the paused queue does not exist' do
+      it 'should return the false if the main queue exists exist' do
         expect(RateLimitedTestQueue.paused?).to eq(false)
+      end
+    end
+
+    context 'with unknown queue state' do
+      before do
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}_paused").and_return(false)
+        Resque.redis.stub(:exists).with("queue:#{RateLimitedTestQueue.queue_name}").and_return(false)
+      end
+
+      it 'should return the default' do
+        expect(RateLimitedTestQueue.paused?(true)).to eq(true)
+        expect(RateLimitedTestQueue.paused?(false)).to eq(false)
       end
     end
   end
