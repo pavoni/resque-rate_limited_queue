@@ -57,7 +57,7 @@ module Resque
 
       def paused?(unknown = false)
         # parameter is what to return if the queue is empty, and so the state is unknown
-        if Resque.redis.exists(RESQUE_PREFIX + queue_name)
+        if Resque.redis.exists(RESQUE_PREFIX + @queue.to_s)
           false
         elsif Resque.redis.exists(RESQUE_PREFIX + paused_queue_name)
           true
