@@ -148,7 +148,8 @@ All the functions are class methods
 rate_limited_enqueue(klass, *params)
 rate_limited_requeue(klass, *params)
 ````
-Queue the job specified to the resque queue specified by `@queue`. `rate_limited_requeue` is intended for use when you need the job to be pushed back to the queue; it just calls `rate_limited_queue`, but they are split to make testing with stubs easier.
+Queue the job specified to the resque queue specified by `@queue`. `rate_limited_requeue` is intended for use when you need the job to be pushed back to the queue; there are two reasons to split this from `queue`. Firstly it makes testing easier - secondly there is a boundary condition when you need to requeue the last job in the queue.
+`, but they are split to make testing with stubs easier.
 
 ```ruby
 pause
