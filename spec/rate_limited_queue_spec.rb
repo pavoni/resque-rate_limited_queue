@@ -138,7 +138,9 @@ describe Resque::Plugins::RateLimitedQueue do
       expect(Resque.redis.exists(paused_queue)).to eq true
     end
 
-    it('says it is not paused') { expect(RateLimitedTestQueue.paused?).to eq false }
+    it 'says it is not paused' do
+      expect(RateLimitedTestQueue.paused?).to eq false
+    end
 
     it 'performs the job' do
       expect do
