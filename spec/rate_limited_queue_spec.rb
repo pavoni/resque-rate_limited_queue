@@ -118,6 +118,38 @@ describe Resque::Plugins::RateLimitedQueue do
     end
   end
 
+  describe 'when queue is paused and Resque is in inline mode' do
+    let(:resque_prefix) { Resque::Plugins::RateLimitedQueue::RESQUE_PREFIX }
+    let(:queue) { resque_prefix + RateLimitedTestQueue.queue_name_private }
+    let(:paused_queue) { resque_prefix + RateLimitedTestQueue.paused_queue_name }
+
+    before do
+      Resque.redis.stub(:exists).with(queue).and_return(false)
+      Resque.redis.stub(:exists).with(paused_queue).and_return(true)
+      Resque.inline = true
+    end
+
+    after do
+      Resque.inline = false
+    end
+
+    it 'would be paused' do
+      expect(Resque.redis.exists(queue)).to eq false
+      expect(Resque.redis.exists(paused_queue)).to eq true
+    end
+
+    it 'says it is not paused' do
+      expect(RateLimitedTestQueue.paused?).to eq false
+    end
+
+    it 'performs the job' do
+      expect do
+        # Stack overflow unless handled
+        RateLimitedTestQueue.rate_limited_enqueue(RateLimitedTestQueue, true)
+      end.not_to raise_error
+    end
+  end
+
   describe 'find_class' do
     it 'works with symbol' do
       RateLimitedTestQueue.find_class(RateLimitedTestQueue).should eq RateLimitedTestQueue
