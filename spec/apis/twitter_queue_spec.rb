@@ -3,7 +3,7 @@ require 'resque/rate_limited_queue'
 
 class RateLimitedTestQueueTw
   def self.perform(succeed)
-    raise(Twitter::Error::TooManyRequests
+    fail(Twitter::Error::TooManyRequests
       .new('', 'x-rate-limit-reset' => (Time.now + 60).to_i)) unless succeed
   end
 end

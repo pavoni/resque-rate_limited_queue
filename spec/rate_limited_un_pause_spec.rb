@@ -45,5 +45,4 @@ describe Resque::Plugins::RateLimitedQueue::UnPause do
         .to eq(Resque::Plugins::RateLimitedQueue::UnPause)
     end
   end
-
 end

@@ -9,7 +9,17 @@ end
 
 class RateLimitedTestQueueEn
   def self.perform(succeed)
-    raise(Evernote::EDAM::Error::EDAMSystemException, rateLimitDuration: RateLimitDuration) unless succeed
+    fail(
+      Evernote::EDAM::Error::EDAMSystemException,
+      errorCode: Evernote::EDAM::Error::EDAMErrorCode::RATE_LIMIT_REACHED,
+      rateLimitDuration: RateLimitDuration
+    ) unless succeed
+  end
+end
+
+class RateLimitedTestQueueOther
+  def self.perform
+    fail(Evernote::EDAM::Error::EDAMSystemException)
   end
 end
 
@@ -51,6 +61,16 @@ describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
           .enqueue(RateLimitedTestQueueEn, false)
       end
     end
+
+    context 'with exception that is not rate limit' do
+      before do
+        Resque::Plugins::RateLimitedQueue::EvernoteQueue.stub(:rate_limited_requeue)
+      end
+      it 'raises the exception when request fails' do
+        expect do
+          Resque::Plugins::RateLimitedQueue::EvernoteQueue.enqueue(RateLimitedTestQueueOther)
+        end.to raise_error Evernote::EDAM::Error::EDAMSystemException
+      end
+    end
   end
 end
-
