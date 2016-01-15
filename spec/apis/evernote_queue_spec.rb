@@ -9,7 +9,7 @@ end
 
 class RateLimitedTestQueueEn
   def self.perform(succeed)
-    raise(Evernote::EDAM::Error::EDAMSystemException, rateLimitDuration: RateLimitDuration) unless succeed
+    fail(Evernote::EDAM::Error::EDAMSystemException, rateLimitDuration: RateLimitDuration) unless succeed
   end
 end
 
@@ -53,4 +53,3 @@ describe Resque::Plugins::RateLimitedQueue::EvernoteQueue do
     end
   end
 end
-
