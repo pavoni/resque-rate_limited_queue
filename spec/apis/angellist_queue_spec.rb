@@ -3,7 +3,7 @@ require 'resque/rate_limited_queue'
 
 class RateLimitedTestQueueAL
   def self.perform(succeed)
-    raise(AngellistApi::Error::TooManyRequests, 'error') unless succeed
+    fail(AngellistApi::Error::TooManyRequests, 'error') unless succeed
   end
 end
 

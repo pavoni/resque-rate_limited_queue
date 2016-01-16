@@ -1,0 +1,46 @@
+---
+AllCops:
+  Exclude:
+    - 'tmp/**/*'
+    - 'coverage/**/*'
+    - 'spec/dummy/**/*'
+
+#-------------------------------------------------------------------------------
+# Project standards
+#-------------------------------------------------------------------------------
+StringLiterals:
+  EnforcedStyle: single_quotes
+  Enabled: true
+
+DotPosition:
+  Description: 'Checks the position of the dot in multi-line method calls.'
+  EnforcedStyle: leading
+  Enabled: true
+
+Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+FileName:
+  Description: 'Use snake_case for source file names.'
+  Enabled: true
+
+Style/SymbolArray:
+  Description: 'Use %i or %I for arrays of symbols.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
+  Enabled: false # Only available in Ruby 2.0+
+
+Style/ExtraSpacing:
+  Description: 'Do not use unnecessary spacing.'
+  Enabled: true
+
+Lint/LiteralInInterpolation:
+  Description: 'Avoid interpolating literals in strings'
+  AutoCorrect: true
+
+#-------------------------------------------------------------------------------
+# These rules have been relaxed because of existing code
+# We should tighten these up over time
+#-------------------------------------------------------------------------------
+LineLength:
+  Max: 166 # project standard is 120
