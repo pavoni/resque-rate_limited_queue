@@ -18,7 +18,8 @@ module Resque
               @queue,
               timestamp,
               Resque::Plugins::RateLimitedQueue::UnPause,
-              klass)
+              klass
+            )
           end
 
           def perform(klass)

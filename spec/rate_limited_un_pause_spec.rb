@@ -28,7 +28,8 @@ describe Resque::Plugins::RateLimitedQueue::UnPause do
           :queue_name,
           nil,
           Resque::Plugins::RateLimitedQueue::UnPause,
-          RateLimitedTestQueue)
+          RateLimitedTestQueue
+        )
 
         Resque::Plugins::RateLimitedQueue::UnPause.enqueue(nil, RateLimitedTestQueue)
       end

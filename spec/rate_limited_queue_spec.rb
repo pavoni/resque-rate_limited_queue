@@ -83,7 +83,7 @@ describe Resque::Plugins::RateLimitedQueue do
 
       it 'should schedule an unpause job' do
         Resque::Plugins::RateLimitedQueue::UnPause.should_receive(:enqueue)
-          .with(nil, 'RateLimitedTestQueue')
+                                                  .with(nil, 'RateLimitedTestQueue')
         RateLimitedTestQueue.pause_until(nil)
       end
     end
