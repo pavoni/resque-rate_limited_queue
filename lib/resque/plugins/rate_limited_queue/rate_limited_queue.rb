@@ -1,8 +1,8 @@
 module Resque
   module Plugins
     module RateLimitedQueue
-      RESQUE_PREFIX = 'queue:'
-      MUTEX = 'Resque::Plugins::RateLimitedQueue'
+      RESQUE_PREFIX = 'queue:'.freeze
+      MUTEX = 'Resque::Plugins::RateLimitedQueue'.freeze
 
       def around_perform_with_check_and_requeue(*params)
         paused = false
